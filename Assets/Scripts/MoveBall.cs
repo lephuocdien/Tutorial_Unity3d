@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class MoveBall : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -9,15 +10,21 @@ public class MoveBall : MonoBehaviour
     public float speed = 2;
     public float jumbspeed = 2;
     private bool istouching =false;
+    public Text cointext;
+    float numbercoin ;
+    public AudioSource asource;
+    public AudioClip aclip;
     void Start()
     {
+        numbercoin = 3;
         rg = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-      
+
+        cointext.text = "COINS :" + numbercoin;
         {
             float HMove = Input.GetAxis("Horizontal");
             float VMove = Input.GetAxis("Vertical");
@@ -35,5 +42,16 @@ public class MoveBall : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         istouching = true;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("cointag"))
+        {
+            asource.PlayOneShot(aclip);
+            numbercoin--;
+            other.gameObject.SetActive(false);
+            if (numbercoin == 0)
+                SceneManager.LoadScene("endscence");
+        }
     }
 }
